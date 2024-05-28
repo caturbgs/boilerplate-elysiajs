@@ -1,0 +1,31 @@
+{
+  "name": "app",
+  "version": "2.0.0",
+  "scripts": {
+    "test": "bun test",
+    "test:watch": "bun test --watch",
+    "dev": "bun run --watch src/index.ts",
+    "env": "bun --print process.env.ENV",
+    "lint": "bunx @biomejs/biome lint --apply .",
+    "lint:check": "bunx @biomejs/biome check --apply .",
+    "lint:unsafe": "bunx @biomejs/biome check --apply-unsafe  .",
+    "format": "bunx @biomejs/biome format --write ."
+  },
+  "dependencies": {
+    "@elysiajs/bearer": "^1.0.2",
+    "@elysiajs/cors": "^1.0.2",
+    "@elysiajs/cron": "^1.0.3",
+    "@elysiajs/jwt": "^1.0.2",
+    "@elysiajs/swagger": "^1.0.5",
+    "elysia": "latest",
+    "elysia-rate-limit": "^4.0.0",
+    "googleapis": "^137.1.0",
+    "pino": "^9.0.0",
+    "pino-pretty": "^11.0.0"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "1.7.2",
+    "bun-types": "latest"
+  },
+  "module": "src/index.js"
+}

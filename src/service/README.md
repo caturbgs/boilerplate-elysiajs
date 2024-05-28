@@ -1,0 +1,1 @@
+This is used for separation of concerns in the project, focused on the business logic layer. Example: calculation, parsing, etc.

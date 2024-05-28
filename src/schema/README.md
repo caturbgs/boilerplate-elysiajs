@@ -1,0 +1,1 @@
+This is used for store the schema of each request and response in the project. Example: request (params, body, headers, etc), response, etc.

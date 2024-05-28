@@ -1,0 +1,1 @@
+This is used for store the routes instance in the project. Example: /users, /products, etc.

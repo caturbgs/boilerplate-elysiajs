@@ -1,0 +1,1 @@
+This is used for store types in the project. Example: interfaces, enums, etc.
