@@ -27,7 +27,7 @@ export const CalculatorService = {
       // data: {
       //   tariff: 1000,
       // },
-      data
+      data,
     };
   },
 };

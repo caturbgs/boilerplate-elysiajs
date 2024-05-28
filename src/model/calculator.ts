@@ -1,4 +1,3 @@
-import { googleApi } from "../libs/googleapi";
 import type { PayloadTariffPln } from "../types/calculator";
 
 export const CalculatorModel = {
@@ -20,13 +19,5 @@ export const CalculatorModel = {
         tariff: 1000,
       },
     };
-  },
-  async getStatisticsPLNAll() {
-    const pvSiteEstimatorGsheet = await googleApi.getValuesGoogleSheets({
-      spreadsheetId: "1OXY0UzsP9lWJ_IkO5GoNhEd34-SSws_Bu0gMIp_e2KM",
-      range: "PLN_Statistics!A1:K20",
-    });
-
-    return pvSiteEstimatorGsheet;
   },
 };

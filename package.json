@@ -19,7 +19,6 @@
     "@elysiajs/swagger": "^1.0.5",
     "elysia": "latest",
     "elysia-rate-limit": "^4.0.0",
-    "googleapis": "^137.1.0",
     "pino": "^9.0.0",
     "pino-pretty": "^11.0.0"
   },

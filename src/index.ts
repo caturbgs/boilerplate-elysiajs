@@ -1,15 +1,13 @@
 import { Elysia } from "elysia";
 import config from "./config";
-import { generateSAFile } from "./helpers/string";
 import { corsPlugin } from "./libs/cors";
+import cronJob from "./libs/cron";
 import { jwtPlugin } from "./libs/jwt";
 import { type ObjectLogger, createLoggerInstance, log, loggerPlugin } from "./libs/logger";
 import { swaggerPlugin } from "./libs/swagger";
 import apiRoutes from "./routes";
 import type { IResponse } from "./types/response";
-import cronJob from "./libs/cron";
 
-generateSAFile();
 const app = new Elysia()
   // Hooks/Middlewares
   .use(loggerPlugin)
