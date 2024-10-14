@@ -1,9 +1,8 @@
 {
-  "name": "kratos",
+  "name": "boilerplate-elysiajs",
   "description": "Gateway for APIs that use Typescript language. Will be contain several modules for different APIs. Example: Calculator, ONM Suite, etc.",
   "license": "MIT",
-  "author": "Xurya Pte. Ltd.",
-  "version": "2.0.28",
+  "version": "0.1.0",
   "scripts": {
     "test": "bun test",
     "test:watch": "bun test --watch",
