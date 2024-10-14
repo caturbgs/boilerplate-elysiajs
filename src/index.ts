@@ -1,65 +1,110 @@
 import { Elysia } from "elysia";
+import { autoload } from "elysia-autoload";
 import config from "./config";
 import { corsPlugin } from "./libs/cors";
-import cronJob from "./libs/cron";
+import { AUTHENTICATION_ERROR, BAD_REQUEST_ERROR, NOT_FOUND_ERROR } from "./libs/error";
 import { jwtPlugin } from "./libs/jwt";
-import { type ObjectLogger, createLoggerInstance, log, loggerPlugin } from "./libs/logger";
+import { createLoggerInstance, loggerPlugin } from "./libs/logger";
 import { swaggerPlugin } from "./libs/swagger";
-import apiRoutes from "./routes";
+import { versionPlugin } from "./libs/version";
 import type { IResponse } from "./types/response";
 
-const app = new Elysia()
+export const app = new Elysia()
   // Hooks/Middlewares
   .use(loggerPlugin)
   .use(corsPlugin)
-  .use(swaggerPlugin)
   .use(jwtPlugin)
+  .use(versionPlugin)
   // using custom error handler
-  .onError({ as: "global" }, ({ error, code, request, path, store }) => {
-    log.error(error);
+  .error({
+    NOT_FOUND_ERROR,
+    AUTHENTICATION_ERROR,
+    BAD_REQUEST_ERROR,
+  })
+  .onError({ as: "global" }, ({ error, code, set }) => {
+    // Log error
+    const errorLog = createLoggerInstance("libs/error");
 
-    const errorResponse: IResponse = {
+    // * Define variable for error response
+    const errorResponse: IResponse<{ property: string; message: string }[] | { property: string; message: string }> = {
       message: error.message,
       status: false,
-    };
-
-    if (config.debugMode) {
-      errorResponse.stack = error.stack;
-    }
-
-    const duration = Date.now() - store.startTime;
-    const httpLog = createLoggerInstance("http");
-    const objectLogger: ObjectLogger = {
-      method: request.method,
-      path: path,
-      duration: `${duration}ms`,
+      // * Only show stack trace in debug mode
+      stack: config.debugMode ? error.stack : undefined,
     };
 
     switch (code) {
-      case "INTERNAL_SERVER_ERROR":
-        objectLogger.status = "500";
-        httpLog.error(objectLogger, `${request.method} ${request.url} ${objectLogger.status} ${duration}ms`);
+      case "VALIDATION": {
+        // custom error response for validation
+        // improve readability for validation error
+        const validationErrorMessageDetailed = error.all.map((e) => {
+          if ("path" in e) {
+            return {
+              property: e.path.replace("/", ""),
+              message: e.message,
+            };
+          }
+
+          return {
+            property: "",
+            message: "",
+          };
+        });
+        const validationErrorMessage = {
+          property: error.validator.Errors(error.value).First().path.replace("/", ""),
+          message: error.validator.Errors(error.value).First().message,
+        };
+        errorLog.warn(validationErrorMessageDetailed);
+
+        errorResponse.message = "Validation Error";
+        // only show detailed error message in debug mode
+        errorResponse.data = config.debugMode ? validationErrorMessageDetailed : validationErrorMessage;
+
+        set.status = 400;
+        break;
+      }
+      case "BAD_REQUEST_ERROR":
+        // custom error response for bad request
+        errorResponse.message = "Bad Request";
+        errorLog.warn(error);
+
+        set.status = 400;
+        break;
+      case "AUTHENTICATION_ERROR":
+        // custom error response for authentication error
+        errorResponse.message = "Authentication Error";
+        errorLog.warn(error);
+
+        set.status = 401;
         break;
       case "NOT_FOUND":
-        objectLogger.status = "404";
-        httpLog.warn(objectLogger, `${request.method} ${request.url} ${objectLogger.status} ${duration}ms`);
+      case "NOT_FOUND_ERROR":
+        // custom error response for not found error
+        errorResponse.message = "Not Found";
+        errorLog.warn(error);
+
+        set.status = 404;
         break;
-      case "VALIDATION":
-        // * No need to log error. Already handled by the logger libs.
+      case "INTERNAL_SERVER_ERROR":
+        // custom error response for internal server error
+        errorResponse.message = "Internal Server Error";
+        errorLog.error(error);
+
+        set.status = 500;
         break;
       default:
-        objectLogger.status = "500";
-        httpLog.error(objectLogger, `${request.method} ${request.url} ${objectLogger.status} ${duration}ms`);
+        errorLog.error(error);
+
+        set.status = 500;
         break;
     }
 
     return errorResponse;
   })
   // Routes
-  .use(apiRoutes)
+  .use(await autoload())
+  .use(swaggerPlugin)
   // Cron
-  .use(cronJob)
+  // .use(cronJob) // Uncomment this line to enable cron job
   // Start the server
   .listen(Bun.env.PORT ?? 3000);
-
-console.log(`Running at ${app.server?.hostname}:${app.server?.port}`);

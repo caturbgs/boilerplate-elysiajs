@@ -1,7 +1,15 @@
 import config from "../config";
-import type { ElysiaContext } from "../types/elysia";
+import type { ElysiaGlobalContext, ElysiaGlobalContextForHandler } from "../types/elysia";
 
-export const authHandlerJwt = async ({ jwt, error, bearer }: ElysiaContext) => {
+/**
+ * JWT authentication handler.
+ * @param {ElysiaGlobalContext} params
+ * @param {JWT} params.jwt - JWT instance
+ * @param {Function} params.error - Error function
+ * @param {string} params.bearer - Bearer token
+ * @returns hook function for handling JWT authentication
+ */
+export const authHandlerJwt = async ({ jwt, error, bearer }: ElysiaGlobalContextForHandler) => {
   const auth = await jwt.verify(bearer);
 
   if (!auth) {
@@ -11,7 +19,14 @@ export const authHandlerJwt = async ({ jwt, error, bearer }: ElysiaContext) => {
   }
 };
 
-export const authHandlerApiKey = async ({ headers, error }: ElysiaContext) => {
+/**
+ * API key authentication handler for Xurya Calculator.
+ * @param {ElysiaGlobalContext} params
+ * @param {Object} params.headers - Headers
+ * @param {Function} params.error - Error function
+ * @returns hook function for handling API key authentication
+ */
+export const authHandlerApiKeyXuryaCalculator = ({ headers, error }: ElysiaGlobalContextForHandler) => {
   const auth = headers.apikey;
 
   if (!auth) {
@@ -20,7 +35,7 @@ export const authHandlerApiKey = async ({ headers, error }: ElysiaContext) => {
     });
   }
 
-  if (config.apiKey !== auth) {
+  if (config.calculator.apiKey !== auth) {
     return error(401, {
       message: "API Key Unauthorized",
     });

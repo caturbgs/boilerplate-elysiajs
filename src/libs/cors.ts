@@ -3,10 +3,9 @@ import Elysia from "elysia";
 
 export const corsPlugin = new Elysia().use(
   cors({
-    origin: "*",
-    // TODO: list all the origins frontend URL that can access this API
-    // origin: ["http://localhost:3000", "etc.."],
+    // origin: ["http://localhost:3100", /^https?:\/\/([a-z0-9]+\.)*xurya\.com$/],
+    origin: ["http://localhost:3100", /^https:\/\/([a-zA-Z0-9-]+\.)?xurya\.com(\/.*)?$/],
     methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+    allowedHeaders: ["Content-Type", "Authorization", "apikey"],
   }),
 );
