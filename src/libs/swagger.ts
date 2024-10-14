@@ -1,14 +1,17 @@
 import swagger from "@elysiajs/swagger";
-import Elysia from "elysia";
+import type { versionPlugin } from "./version";
 
-export const swaggerPlugin = new Elysia().state("version", Bun.env.VERSION ?? "0.0.1").use(
-  swagger({
-    documentation: {
-      info: {
-        title: "Bun Gateway",
-        description: "Bun Gateway API",
-        version: Bun.env.VERSION ?? "0.0.1",
+type ElysiaPluginVersion = typeof versionPlugin;
+
+export const swaggerPlugin = (app: ElysiaPluginVersion) =>
+  app.use(
+    swagger({
+      documentation: {
+        info: {
+          title: "Kratos",
+          description: "Open API for Kratos. This is a documentation for Kratos API.",
+          version: app.store.version,
+        },
       },
-    },
-  }),
-);
+    }),
+  );

@@ -1,13 +1,22 @@
-# docker-compose.yml
-version: "3.9"
-
+# docker-compose-dev.yml
 services:
-  # TODO: add vault service
-  xurya-calculator:
-    image: "asia.gcr.io/xuryaeligibility/xurya-calculator:latest"
-    # TODO: integrate with the vault to start the server
-    entrypoint: []
-    # start the server
-    command: "/bin/sh -c 'bun run src/index.ts'"
-    # expose the right ports
+  elysia:
+    image: "elysia:latest"
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    volumes:
+      - ./temp:/temp
+    # expose ports
     ports: ["8000:8000"]
+
+    # resources limitation
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 256M
+        reservations:
+          cpus: '0.25'
+          memory: 128M

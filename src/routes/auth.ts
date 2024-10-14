@@ -1,8 +1,8 @@
-import { Elysia } from "elysia";
+import type { ElysiaGlobalApp } from "..";
 import { jwtPlugin } from "../libs/jwt";
 import { authSchema } from "../schema/auth";
 
-export default new Elysia().group("/auth", (app) =>
+export default (app: ElysiaGlobalApp) =>
   app
     .use(jwtPlugin)
     .use(authSchema)
@@ -56,5 +56,4 @@ export default new Elysia().group("/auth", (app) =>
       {
         body: "auth.sign-in",
       },
-    ),
-);
+    );

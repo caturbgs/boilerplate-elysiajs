@@ -1,10 +1,7 @@
-import type { JWTPayloadSpec } from "@elysiajs/jwt";
-import type { Context } from "elysia";
+import type { InferContext } from "elysia";
+import type { app } from "..";
 
-export interface ElysiaContext extends Context {
-  jwt: {
-    readonly sign: (morePayload: Record<string, string | number> & JWTPayloadSpec) => Promise<string>;
-    readonly verify: (jwt?: string | undefined) => Promise<false | (Record<string, string | number> & JWTPayloadSpec)>;
-  };
-  bearer: string | undefined;
-}
+export type ElysiaGlobalApp = typeof app;
+export type ElysiaGlobalContext = InferContext<ElysiaGlobalApp>;
+// biome-ignore lint/complexity/noBannedTypes: it's a workaround for Elysia's bug where the global type `params` is have type `never` but on local handler it's have type `{}`.
+export type ElysiaGlobalContextForHandler = Omit<ElysiaGlobalContext, "params"> & { params: {} };

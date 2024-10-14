@@ -1,29 +1,42 @@
 {
-  "name": "app",
-  "version": "2.0.0",
+  "name": "boilerplate-elysiajs",
+  "description": "Gateway for APIs that use Typescript language. Will be contain several modules for different APIs. Example: Calculator, ONM Suite, etc.",
+  "license": "MIT",
+  "version": "0.1.0",
   "scripts": {
     "test": "bun test",
     "test:watch": "bun test --watch",
     "dev": "bun run --watch src/index.ts",
-    "env": "bun --print process.env.ENV",
-    "lint": "bunx @biomejs/biome lint --apply .",
-    "lint:check": "bunx @biomejs/biome check --apply .",
-    "lint:unsafe": "bunx @biomejs/biome check --apply-unsafe  .",
-    "format": "bunx @biomejs/biome format --write ."
+    "lint:safe": "bunx @biomejs/biome check --write .",
+    "lint:unsafe": "bunx @biomejs/biome check --write --unsafe .",
+    "format": "bunx @biomejs/biome format --write .",
+    "format:lint:safe": "bun format && bun lint:safe",
+    "format:lint:unsafe": "bun format && bun lint:unsafe"
   },
   "dependencies": {
+    "@date-fns/tz": "^1.1.2",
+    "@date-fns/utc": "^2.1.0",
     "@elysiajs/bearer": "^1.0.2",
     "@elysiajs/cors": "^1.0.2",
     "@elysiajs/cron": "^1.0.3",
     "@elysiajs/jwt": "^1.0.2",
     "@elysiajs/swagger": "^1.0.5",
+    "@google-cloud/bigquery": "^7.7.1",
+    "@google-cloud/storage": "^7.11.2",
+    "@googleapis/drive": "^8.10.0",
+    "@googleapis/sheets": "^8.0.0",
+    "date-fns": "^4.1.0",
     "elysia": "latest",
-    "elysia-rate-limit": "^4.0.0",
-    "pino": "^9.0.0",
-    "pino-pretty": "^11.0.0"
+    "elysia-autoload": "^1.4.0",
+    "elysia-rate-limit": "^4.1.0",
+    "logixlysia": "^3.6.2",
+    "pino": "^9.4.0",
+    "pino-pretty": "^11.2.2",
+    "redis": "^4.6.14",
+    "ulid": "^2.3.0"
   },
   "devDependencies": {
-    "@biomejs/biome": "1.7.2",
+    "@biomejs/biome": "1.9.2",
     "bun-types": "latest"
   },
   "module": "src/index.js"

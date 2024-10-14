@@ -1,8 +1,3 @@
-import path from "node:path";
-import { write } from "bun";
-import config from "../config";
-import { log } from "../libs/logger";
-
 /**
  * Convert a string to sentence case
  * @param word string to be converted
@@ -40,4 +35,34 @@ export function base64Decode(data: string): string {
  */
 export function base64Encode(data: string): string {
   return Buffer.from(data).toString("base64");
+}
+
+export function hashSHA256WithSalt(text: string, salt: string): string {
+  const hasher = new Bun.CryptoHasher("sha256");
+
+  hasher.update(text);
+  hasher.update(salt);
+
+  return hasher.digest("hex");
+}
+
+export function verifySHA256WithSalt(text: string, salt: string, hash: string): boolean {
+  return hashSHA256WithSalt(text, salt) === hash;
+}
+
+/**
+ * Check if a string is a valid JSON
+ * @param {string} str string to be checked
+ * @returns {boolean} true if string is a valid JSON
+ */
+export function isJson(str: string): boolean {
+  try {
+    JSON.parse(str);
+    return true;
+  } catch (e) {
+    if (e instanceof SyntaxError) {
+      return false;
+    }
+    throw e; // Re-throw if it's an unexpected error
+  }
 }
